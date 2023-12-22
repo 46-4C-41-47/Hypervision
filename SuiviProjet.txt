@@ -1,0 +1,59 @@
+
+
+GENERAL
+
+    1. Apprendre le GO
+
+    2. Convertir les semaines en jour calendrier
+
+    3. Se documenter sur canopsis qui est un exemple d'hyperviseur : https://github.com/capensis/canopsis 
+
+
+Structure du repo:
+
+    - docker-compose.yml 
+
+    - web                           <- code GO
+
+    - redis                         <- volume redis             Plus tard 
+
+    - elastic                       <- volumes elastic          Plus tard
+
+
+ETAPE 1: INITIALISATION 
+
+    1. Construire docker-compose.yml 
+
+        front : installer l'application GO
+
+        Redis: stocker les utilisateurs
+
+            {"name": "", "avatar": "", "password": "", roles: ["rd", "commerce"]}
+
+        elastic: stocker nos données applicatives
+
+        [redisinsight] : interface web d'admin de redis 
+
+    
+
+    2. Commencer à coder l'interface web (front-end GO )
+
+        - rechercher le plugin/module REDIS et celui de elastic
+
+        - interface de connexion
+
+        - Tableau de bord
+
+    
+
+
+ETAPE 2 : La COLLECTE DES DONNEES
+
+
+ETAPE 3: LE TRAITEMENT DES DONNEES
+
+
+ETAPE 4 : A DEFINIR
+
+
+ETAPE 5 : A DEFINIR
