@@ -9,10 +9,20 @@ services:
       - "3000:3000"
     networks:
       - network1
+  
   redis:
-    image: redis:latest
+    image: redis/redis-stack
     expose:
       - "6379"
+    networks:
+      - network1
+
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis
     networks:
       - network1
 

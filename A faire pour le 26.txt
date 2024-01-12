@@ -1,0 +1,7 @@
+ajout role -> admin peut gérer les utilisateurs mais pas le visiteurs
+ajout des utilisateurs avec des jsons
+menu gestion des utilsateurs
+
+3 roles (superadmin, admin, viewer)
+
+redis config

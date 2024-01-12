@@ -9,7 +9,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-const port = ":3000"
+const port = "3000"
 
 var ctx = context.Background()
 var rdb *redis.Client
@@ -40,7 +40,7 @@ func Connect(response http.ResponseWriter, request *http.Request) {
 	u.username = request.FormValue("username")
 	u.password = request.FormValue("password")
 
-	log.Print("user : " + u.username + " tried to connect with password : " + u.password)
+	log.Print("user : " + u.username + " tried to connect")
 
 	password, err := rdb.Get(ctx, u.username).Result()
 
@@ -65,11 +65,6 @@ func initRedis() {
 		Password: "",
 		DB:       0,
 	})
-
-	err := rdb.Set(ctx, "user", "psswrd", 0).Err()
-	if err != nil {
-		panic(err)
-	}
 }
 
 func main() {
@@ -81,7 +76,7 @@ func main() {
 	http.HandleFunc("/", Home)
 	http.HandleFunc("/Connect", Connect)
 
-	log.Print("Application started, go on http://localhost" + port)
+	log.Print("Application started, go on http://localhost:" + port)
 
 	err := http.ListenAndServe(port, nil)
 	if err != nil {
