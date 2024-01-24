@@ -40,18 +40,18 @@ func Connect(response http.ResponseWriter, request *http.Request) {
 	u.username = request.FormValue("username")
 	u.password = request.FormValue("password")
 
-	log.Print("user : " + u.username + " tried to connect")
+	log.Print("someone tried to connect as " + u.username)
 
 	password, err := rdb.Get(ctx, u.username).Result()
 
 	if err == redis.Nil || password != u.password {
-		log.Print("username or password incorrect")
+		log.Print("connection to user " + u.username + " failed : username or password incorrect")
 
 	} else if err != nil {
 		panic(err)
 
 	} else {
-		log.Print("you are logged as " + u.username)
+		log.Print("connection to " + u.username + " succeed")
 		tmpl.Execute(response, nil)
 		return
 	}
@@ -78,7 +78,7 @@ func main() {
 
 	log.Print("Application started, go on http://localhost:" + port)
 
-	err := http.ListenAndServe(port, nil)
+	err := http.ListenAndServe("localhost:" + port, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
