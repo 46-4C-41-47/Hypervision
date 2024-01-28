@@ -65,6 +65,8 @@ func initRedis() {
 		Password: "",
 		DB:       0,
 	})
+
+	//rdb.Set(ctx, "users", "{\"users\":[{\"name\":\"user1\",\"password\":\"user\",\"role\":\"visitor\"},{\"name\":\"admin1\",\"password\":\"admin\",\"role\":\"admin\"},{\"name\":\"superadmin1\",\"password\":\"superadmin\",\"role\":\"superadmin\"}]}", 0);
 }
 
 func main() {
