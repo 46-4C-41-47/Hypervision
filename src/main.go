@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
 	"text/template"
 
 	"github.com/redis/go-redis/v9"
@@ -23,7 +22,6 @@ type User struct {
 }
 
 var currentUser User
-var users []User
 
 func Home(response http.ResponseWriter, request *http.Request) {
 	homeTemplate, err := template.ParseFiles("./web/index.html")
@@ -40,9 +38,8 @@ func Connect(response http.ResponseWriter, request *http.Request) {
 
 	if err != nil {
 		http.Error(response, err.Error(), 501)
+		return
 	}
-
-	loadUsers()
 
 	var u User
 	u.username = request.FormValue("username")
@@ -50,9 +47,9 @@ func Connect(response http.ResponseWriter, request *http.Request) {
 
 	log.Print("someone tried to connect as " + u.username)
 
-	user := getUser(u.username, u.password)
+	user, err := getUser(u.username)
 
-	if err == redis.Nil || user.username == "noUser" {
+	if err == redis.Nil || u.password != user.password {
 		log.Print("connection to user " + u.username + " failed : username or password incorrect")
 
 	} else if err != nil {
@@ -61,7 +58,7 @@ func Connect(response http.ResponseWriter, request *http.Request) {
 	} else {
 		log.Print("connection to " + u.username + " succeed")
 
-		currentUser.username = u.username
+		currentUser = user
 
 		tmpl.Execute(response, nil)
 		return
@@ -78,36 +75,23 @@ func initRedis() {
 	})
 }
 
-func loadUsers() {
-	val, redisErr := rdb.Get(ctx, "users").Result()
+func getUser(username string) (User, error) {
+	var user User
+	val, err := rdb.Get(ctx, username).Result()
 
-	if redisErr != nil {
+	if err != nil {
 		log.Print("The application was unable to retrieve users from Redis")
-		return
+		return user, err
 	}
 
-	err := json.Unmarshal([]byte(val), &users)
+	err = json.Unmarshal([]byte(val), &user)
 
 	if err != nil {
 		log.Print("The application was unable to parse the JSON retrieve from Redis")
-		return
+		return user, err
 	}
 
-	for i := 0; i < len(users); i++ {
-		log.Print("index : " + strconv.Itoa(i) + " " + users[i].username)
-	}
-}
-
-func getUser(username string, password string) User {
-	for i := 0; i < len(users); i++ {
-		if users[i].username == username && users[i].password == password {
-			return users[i]
-		}
-	}
-
-	var noUser User
-	noUser.username = "noUser"
-	return noUser
+	return user, nil
 }
 
 func main() {

@@ -1,0 +1,4 @@
+finir la partie connexion -> package rejson
+mettre en place un conteneur elastic 
+trouver un moyen de récupérer les données d'un cluster
+récupérer les données depuis elastic et les stocker dans redis 
