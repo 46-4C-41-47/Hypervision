@@ -5,66 +5,74 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"text/template"
 
 	"github.com/redis/go-redis/v9"
 )
 
+type User struct {
+	Name     string `json:"username"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
+}
+
+type UserPageData struct {
+	Users        []User
+	IsAdmin      bool
+	IsSuperadmin bool
+}
+
 const port = "3000"
+const Visitor = "visitor"
+const Admin = "admin"
+const SuperAdmin = "superadmin"
 
 var ctx = context.Background()
 var rdb *redis.Client
+var loggedUser = User{}
+var connectionFailed = false
 
-type User struct {
-	username string `json:"username"`
-	password string `json:"password"`
-	role     string `json:"role"`
-}
-
-var currentUser User
-
-func Home(response http.ResponseWriter, request *http.Request) {
-	homeTemplate, err := template.ParseFiles("./web/index.html")
+func getAllUsers() []User {
+	v, err := rdb.Keys(ctx, "*").Result()
+	var users []User
 
 	if err != nil {
-		http.Error(response, err.Error(), 501)
+		log.Print("The application was unable to retrieve keys from Redis")
+		return nil
 	}
 
-	homeTemplate.Execute(response, nil)
+	for _, element := range v {
+		users = append(users, getUser(element))
+	}
+
+	return users
 }
 
-func Connect(response http.ResponseWriter, request *http.Request) {
-	tmpl, err := template.ParseFiles("./web/user.html")
+func getUser(username string) User {
+	v, redisErr := rdb.Get(ctx, username).Result()
+	user := User{}
 
-	if err != nil {
-		http.Error(response, err.Error(), 501)
-		return
+	if redisErr != nil {
+		log.Print("The application was unable to retrieve users from Redis")
+		return user
 	}
 
-	var u User
-	u.username = request.FormValue("username")
-	u.password = request.FormValue("password")
+	jsonErr := json.Unmarshal([]byte(v), &user)
 
-	log.Print("someone tried to connect as " + u.username)
+	if jsonErr != nil {
+		log.Print("The application was unable to parse JSON from Redis")
+	}
 
-	user, err := getUser(u.username)
+	return user
+}
 
-	if err == redis.Nil || u.password != user.password {
-		log.Print("connection to user " + u.username + " failed : username or password incorrect")
+func removeUser(username string) {
+	_, redisErr := rdb.Del(ctx, username).Result()
 
-	} else if err != nil {
-		panic(err)
-
+	if redisErr != nil {
+		log.Print("The application was unable to remove user " + username + " from Redis")
 	} else {
-		log.Print("connection to " + u.username + " succeed")
-
-		currentUser = user
-
-		tmpl.Execute(response, nil)
-		return
+		log.Print(username + " was removed from user list")
 	}
-
-	Home(response, request)
 }
 
 func initRedis() {
@@ -75,38 +83,21 @@ func initRedis() {
 	})
 }
 
-func getUser(username string) (User, error) {
-	var user User
-	val, err := rdb.Get(ctx, username).Result()
-
-	if err != nil {
-		log.Print("The application was unable to retrieve users from Redis")
-		return user, err
-	}
-
-	err = json.Unmarshal([]byte(val), &user)
-
-	if err != nil {
-		log.Print("The application was unable to parse the JSON retrieve from Redis")
-		return user, err
-	}
-
-	return user, nil
-}
-
 func main() {
 	initRedis()
 
-	fs := http.FileServer(http.Dir("web"))
-	http.Handle("/web/", http.StripPrefix("/web/", fs))
+	getAllUsers()
 
-	http.HandleFunc("/", Home)
+	http.HandleFunc("/", Login)
+	http.HandleFunc("/Users", Users)
+	http.HandleFunc("/AddUser", AddUser)
+	http.HandleFunc("/DeleteUser", DeleteUser)
+	http.HandleFunc("/Dashboard", DeleteUser)
 	http.HandleFunc("/Connect", Connect)
+	http.HandleFunc("/Home", Home)
+	http.HandleFunc("/SignOut", SignOut)
 
-	log.Print("Application started, go on http://localhost:" + port)
+	log.Print("application started on : http://localhost:" + port + "\n")
 
-	err := http.ListenAndServe(":"+port, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

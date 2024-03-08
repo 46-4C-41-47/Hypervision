@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypervision</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://unpkg.com/htmx.org@1.9.2" integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+    <div class="d-inline-flex" style="width: 100%; height: 100vh;">
+      <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; height: 100%;">
+        <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+          <span class="fs-4">Hypervision</span>
+        </a>
+        <hr>
+          <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+              <button hx-get="/Home" hx-target="body" class="btn text-light">
+                Home
+              </button>
+            </li>
+            
+            <li>
+              <button hx-get="/Dashboard" hx-target="#display-panel" class="btn text-light">
+                Dashboard
+              </button>
+            </li>
+            
+            {{if .IsAdmin}}
+              <li>
+                <button hx-get="/Users" hx-target="#display-panel" class="btn text-light">
+                  Users
+                </button>
+              </li>
+            {{end}}
+          </ul>
+        <hr>
+
+        <div>
+          <button hx-post="/SignOut" hx-target="#main-div" type="button" class="btn btn-outline-light">Sign out</button>
+        </div>
+      </div>
+
+      <div id="display-panel" style="width: 70%;">
+        Home page
+      </div>
+    </div>
+  </body>
+</html>
