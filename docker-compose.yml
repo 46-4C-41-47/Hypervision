@@ -6,7 +6,7 @@ services:
     depends_on:
       - redis
     ports:
-      - "3000:3000"
+      - "${GO_WEB_APP}:${GO_WEB_APP}"
     networks:
       - network1
   
