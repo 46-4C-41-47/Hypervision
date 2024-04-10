@@ -1,8 +1,0 @@
-mettre en place un conteneur elastic (voir mail)
-Trouver comment ajouter les données dans elastic (les données seront récupérer à partir d'un CURL et elles seront au format JSON)
-	datastream gestion des index par elastic
-	https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html
-	les données doivent avoir un champ @timestamp pour dater les données
-	les données doivent etre poussé sur elasticsearch par un curl
-mettre en place un conteneur kibana temporaire
-récupérer les données depuis elastic et les stocker dans redis 
