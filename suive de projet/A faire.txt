@@ -6,3 +6,6 @@ Trouver comment ajouter les données dans elastic (les données seront récupér
 	les données doivent etre poussé sur elasticsearch par un curl
 mettre en place un conteneur kibana temporaire
 récupérer les données depuis elastic et les stocker dans redis 
+
+
+second conteneur pour l'upload des données vers elastic -> cron linux (package cron go)
