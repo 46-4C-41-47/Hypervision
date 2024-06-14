@@ -6,4 +6,6 @@ puis exécutez les commandes suivantes depuis un terminal (il vous faudra avoir 
 pour construire l'image go.
 
 Puis exécutez la commande ``` docker compose up ```.
+
+Ou alors vous pouvez exécuter la commande ./hypervision.bat pour lancer un script qui fait ça à votre place.
 Vous n'avez ensuite plus qu'à vous rendre sur votre [localhost](http://localhost:3000) pour accéder à l'application web
