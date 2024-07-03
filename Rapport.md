@@ -1,31 +1,38 @@
 # Rapport projet annuel
 Romain Besson - Tuteur : Martin Lekpa
 
-## Résumé du projet
-Le but du projet est de créer une solution d'hypervision dans le style de [canopsis](https://www.canopsis.fr/), c'est-à-dire un outil qui regroupe tous les outils de supervision nécessaire
-à la mise en place et la gestion d'un système d'information comme par exemple un outil qui récupère et liste les logs de toutes les machine virtuelle et en sort des statistiques, 
-ou encore un outil de création de machine virtuelle
+## Description du projet
+Les manières modernes de gérer le déploiement d'un logiciel nécessitent l'utilisation de machines virtuelles pour utiliser au mieux le hardware et les ressources utilisées en fonction du besoin. Cependant cette manière de faire rajoute une couche de complexité et donc requiert des outils de supervisions pour gérer ce parc de machines virtuelles. Ces outils de supervisions sont nombreux, donc pour rendre le travail de ceux qui gèrent le parc plus facile il existe des outils dits d'hypervision dont le but est de regrouper les outils de supervision en un seul outil .
+Le but est de créer une solution d'hypervision dans le style de [canopsis](https://www.canopsis.fr/)
 
-## Technologies utilisées
-Ce projet devra se baser sur des conteneurs docker pour pouvoir interfacer les différentes technologies. 
-Le cœur de l'application sera un programme en GO qui devra faire l'intermédiaire entre les différents composants. 
+## Fonctionnalités
+ - Authentification
+ Les utilisateurs ont un role qui leur est attribué et qui conditionne les outils auxquels ils ont accès, c'est rôles sont : visiteur, admin et superadmin.
+ - Gestion des utilisateurs et des rôles
+ Les admins doivent pouvoir voir la liste des utilisateurs. Les superadmins doivent pouvoir voir la liste des utilisateurs , créer, modifier et supprimer des comptes.
+ - Système de logs
+ On doit avoir un onglet qui liste les évènements se produisent en temps réel sur le système et qui corrèle les informations pour mettre en évidence les premières causes et l'impacte d'un indicent sur le système.
+ - Vision de l'état du système 
+ On doit avoir une vision synthétique de l'état actuel du système et des ressources utilisées
+ - Création de statistiques
+ Mise à disposition de statistiques sur l'exécution de calculs ou de processus complexes.
 
-Pour la partie front-end on utilisera une technologie web du nom de HTMX qui repose sur le principe d'AJAX et qui permet d'utiliser un autre langage que JavaScript pour faire du web. 
-
-Pour la partie données on utilisera un conteneur Redis qui permet un accès rapide aux données grâce au fait qu'elles sont stockées en mémoire 
-et pour l'aspect recherche des données on utilisera Elasticsearch, qui est un moteur de recherche dont l'avantage est d'être bien plus rapide 
-que des langages de base de données classique comme MySQL.
-
-L'interface web devra permettre aux utilisateurs de se connecter, de créer et supprimer des utilisateurs pour les super admins ainsi que de voir ces utilisateurs pour les admins.
-
-Elle devra aussi mettre en forme les données stocké dans Redis et restitué par Elasticsearch et d'en faire des statistiques.
+## Choix des technologies
+Ce projet utilisera des applications existantes et diverses ce qui peut poser des problèmes d'interfacages entre ces mêmes applications, pour régler ce problème on utilisera Docker ce qui permet d'isoler chaque application dans des conteneurs et de créer et gérer les communications de manière centralisée entre les applications.
+Pour le stockage des données on utilisera ElasticSearch qui par son moteur de recherche moderne offre une grande rapidité d'intéraction avec les données.
+L'application utilisera un cache pour accélérer l'application, pour ce faire on utilisera Redis qui est une base données en mémoire ce qui lui permet d'utiliser les avantages de la mémoire par rapport au stockage classique à savoir la rapidité.
+Pour la partie IHM l'application se présentera dans une page web. Pour créer des pages webs avec Go on utilisera le concept de template qui permet d'interpoler des variables dans un fichier html, pour rendre la page web plus dynamique on utilisera HTMX qui intègre le principe d'Ajax dans du html classique.
+Pour l'application principale on utilisera le langage moderne qu'est Go. Les raisons de ce choix sont :
+- la simplicité de ce langage qui permet de créer des applications facile à maintenir et à déployer
+- la rapidité, même si Go offre des paradigmes de haut niveau comme de la programmation orientée objet il a pour but de créer des applications rapides, ce qui est requit dans le concept de vitualisation qui même si il apporte des avantages apporte aussi le défaut d'un système plus lent par le nombre de couches ajoutées.
+- se former à un langage moderne qui est de plus en plus utilisé dans le monde du développement
 
 ## Architecture
 ![Image](./suivie%20de%20projet/Soutenance/Architecture.png "Title")
 
-On peut voir ci-dessus un schéma en pseudo UML qui permet de visualer les différents conteneurs qui compose l'application.
+On peut voir ci-dessus un schéma en pseudo UML qui permet de visualer les différents conteneurs qui composent l'application.
 
-On peut y voir 2 conteneur qui sont Kibana et Redis Insight qui ne servent qu'au développement pour visualiser et interagir avec les données de leur conteneur associé. 
+On peut y voir 2 conteneurs qui sont Kibana et Redis Insight qui ne servent qu'au développement pour visualiser et interagir avec les données de leur conteneur associé. 
 
 ## Méthodologie de travail
 Plusieurs rendez-vous régulier ont été fixés de manière périodique environ une fois par mois. 
