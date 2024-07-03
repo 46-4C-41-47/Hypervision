@@ -19,9 +19,13 @@ Le but est de créer une solution d'hypervision dans le style de [canopsis](http
 
 ## Choix des technologies
 Ce projet utilisera des applications existantes et diverses ce qui peut poser des problèmes d'interfacages entre ces mêmes applications, pour régler ce problème on utilisera Docker ce qui permet d'isoler chaque application dans des conteneurs et de créer et gérer les communications de manière centralisée entre les applications.
+
 Pour le stockage des données on utilisera ElasticSearch qui par son moteur de recherche moderne offre une grande rapidité d'intéraction avec les données.
+
 L'application utilisera un cache pour accélérer l'application, pour ce faire on utilisera Redis qui est une base données en mémoire ce qui lui permet d'utiliser les avantages de la mémoire par rapport au stockage classique à savoir la rapidité.
+
 Pour la partie IHM l'application se présentera dans une page web. Pour créer des pages webs avec Go on utilisera le concept de template qui permet d'interpoler des variables dans un fichier html, pour rendre la page web plus dynamique on utilisera HTMX qui intègre le principe d'Ajax dans du html classique.
+
 Pour l'application principale on utilisera le langage moderne qu'est Go. Les raisons de ce choix sont :
 - la simplicité de ce langage qui permet de créer des applications facile à maintenir et à déployer
 - la rapidité, même si Go offre des paradigmes de haut niveau comme de la programmation orientée objet il a pour but de créer des applications rapides, ce qui est requit dans le concept de vitualisation qui même si il apporte des avantages apporte aussi le défaut d'un système plus lent par le nombre de couches ajoutées.
